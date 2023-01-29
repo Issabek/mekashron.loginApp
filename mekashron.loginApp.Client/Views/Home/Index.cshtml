@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+<div>
+    <button onclick="fireLogin()"></button>
+</div>
+
+@section Scripts{
+    <script>
+        function fireLogin(){
+            $.ajax({
+                url: '/Login/Login',
+                method: "POST",
+                data: {
+                   login:'a',
+                   password:'b'
+                }
+            }).done(function (data) {
+                alert("OK")
+            });
+        }
+    </script>
+}
