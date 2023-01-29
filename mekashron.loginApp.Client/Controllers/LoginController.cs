@@ -24,8 +24,8 @@ namespace mekashron.loginApp.Client.Controllers
                 return BadRequest("Не правильный логин или пароль");
             }
             var ip = HttpContext.Connection.LocalIpAddress;
-            var result = await _loginService.Login(login, password, "");
-            return Ok(result);
+            return Ok(await _loginService.Login(login, password, ip.ToString()));
+
         }
         public IActionResult Index()
         {

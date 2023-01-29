@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using mekashron.loginApp.BLL;
 using mekashron.loginApp.Client;
+using mekashron.loginApp.Client.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -16,7 +17,12 @@ var configuration = builder.Configuration;
 //    //options.Cookie.IsEssential = true;
 //    //options.Cookie.SameSite = SameSiteMode.None;
 //});
-builder.Services.AddControllersWithViews();
+//builder.Services.AddControllers(o =>
+//{
+//    o.Filters.Add(typeof(ErrorResultFilter));
+//});
+builder.Services.AddControllersWithViews(o=>
+o.Filters.Add(typeof(ErrorResultFilter)));
 builder.Services.AddRazorPages();
 builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
 {

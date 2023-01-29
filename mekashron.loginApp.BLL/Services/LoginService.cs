@@ -1,13 +1,16 @@
 ﻿using mekashron.loginApp.BLL.Interfaces;
+using mekashron.loginApp.BLL.Models;
 using mekashron.loginApp.BLL.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Security;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace mekashron.loginApp.BLL.Services
@@ -29,16 +32,28 @@ namespace mekashron.loginApp.BLL.Services
             this._configuration= configuration; 
            // this._userManager= userManager;
         }
-        public async Task<string> Login(string userName, string password,string ip)
+        public async Task<LoginResult> Login(string userName, string password,string ip)
         {
-            var loginResponse =await _retryExecutor.Retry(async() => 
-            await _icutechService.LoginAsync(userName, password, ip),
-            _configuration.GetValue<int>("MaxRetries"),
-            _configuration.GetValue<int>("MaxInterval")
-            );
+            LoginResult result = new();
+            try
+            {
+                var loginResponse = await _retryExecutor.Retry(async () =>
+                await _icutechService.LoginAsync(userName, password, ip),
+                _configuration.GetValue<int>("MaxRetries"),
+                _configuration.GetValue<int>("MaxInterval")
+                );
+                result.LoginResponse= loginResponse; 
+                return result;
 
-            return loginResponse;
+            }
+            catch (NullReferenceException ex)
+            {
+                result.ErrorResult = JsonConvert.DeserializeObject<ResponseErrorMessage>(ex.Message);
+                return result;
+            }
         }
+
+
         //cannot be implemented since i dont have dbcontext to store it
         //public async Task AuthenticateAsync(UserNamePasswordClientCredential user, LoginResponse loginResponse)
         //{

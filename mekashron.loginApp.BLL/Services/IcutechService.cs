@@ -1,6 +1,8 @@
 ﻿using mekashron.loginApp.BLL.Interfaces;
+using mekashron.loginApp.BLL.Models;
 using mekashron.loginApp.BLL.Utils;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +22,18 @@ namespace mekashron.loginApp.BLL.Services
             this._url = _configuration["IcutechUrl"];
         }
 
-        public async Task<string> LoginAsync(string login, string password, string ip)
+        public async Task<LoginResponseModel> LoginAsync(string login, string password, string ip)
         {
-            var icuClient  = new ICUTechClient(ICUTechClient.EndpointConfiguration.IICUTechPort, _url);
+            var icuClient = new ICUTechClient(ICUTechClient.EndpointConfiguration.IICUTechPort, _url);
             icuClient.ClientCredentials.ServiceCertificate.SslCertificateAuthentication = X509.Ignore();
             icuClient.Endpoint.Binding = BindingResult.GetBinding(_url);
             var loginresult = await icuClient.LoginAsync(login, password, ip);
-            return loginresult.@return;
+            var deserializedLoginResponse =  JsonConvert.DeserializeObject<LoginResponseModel>(loginresult.@return);
+            if(deserializedLoginResponse.EntityId==null ) 
+            {
+                throw new NullReferenceException(loginresult.@return);
+            }
+            return deserializedLoginResponse;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using mekashron.loginApp.BLL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Security;
@@ -11,6 +12,6 @@ namespace mekashron.loginApp.BLL.Interfaces
     {
         //cannot be implemented since i dont have dbcontext to store it
         //Task AuthenticateAsync(UserNamePasswordClientCredential user, LoginResponse loginResponse);
-        Task<string> Login(string userName, string password, string ip);
+        Task<LoginResult> Login(string userName, string password, string ip);
     }
 }

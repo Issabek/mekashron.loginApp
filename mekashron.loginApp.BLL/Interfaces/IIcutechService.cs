@@ -1,4 +1,5 @@
-﻿using System;
+﻿using mekashron.loginApp.BLL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace mekashron.loginApp.BLL.Interfaces
 {
     public interface IIcutechService
     {
-        Task<string> LoginAsync(string login, string password, string ip);
+        Task<LoginResponseModel> LoginAsync(string login, string password, string ip);
     }
 }
