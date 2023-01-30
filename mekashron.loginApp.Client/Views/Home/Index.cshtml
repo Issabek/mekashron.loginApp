@@ -12,7 +12,62 @@
     </form>
 </div>
 
-@{
-    await Html.RenderPartialAsync("~/Views/Shared/_Modals.cshtml");
-}
+<div class="modal fade" id="loginResponseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="successAlert" style="display:none">
+                    <div class="alert alert-success" role="alert">
+                        Success!
+                    </div>
+                </div>
+                <div id="failureAlert" style="display:none">
+                    <div class="alert alert-danger" role="alert">
+                        Error!
+                    </div>
+                </div>
+                <pre id="loginResponseModalBody"></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+
+@section Scripts{
+    <script>
+        $("#loginForm").submit(function (e) {
+            var pass = $('#password').val();
+            var login = $('#login').val();
+            e.preventDefault();
+            $.ajax({
+                url: '/Login/Login',
+                method: "POST",
+                data: {
+                    login: login,
+                    password: pass
+                }
+            }).done(function (data) {
+                if (data.isSuccess) {
+                    document.getElementById("loginResponseModalBody").textContent = JSON.stringify(data.loginResponse, undefined, 2);
+                    $('#failureAlert').hide();
+                    $('#successAlert').show();
+                }
+                else {
+                    document.getElementById("loginResponseModalBody").textContent = JSON.stringify(data.errorResult, undefined, 2);
+                    $('#successAlert').hide();
+                    $('#failureAlert').show();
+                }
+                $('#loginResponseModal').modal('show');
+            });
+        });
+    </script>
+                }
